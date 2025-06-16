@@ -1,0 +1,139 @@
+
+.register-box {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    color: white;
+    top: 50%;
+    transform: translate(0, -50%);
+    z-index: 3; /* Ensure it sits above background image/shadow */
+    flex-wrap: wrap;
+    padding: 1rem;
+}
+
+
+.register-item {
+    background-color: rgb(47, 47, 47);
+    padding: 25px 50px 45px;
+    width: 350px;
+    border-radius: 10px;
+    line-height: 2;
+    margin: 0 25px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    position: relative;
+    z-index: 3;
+}
+
+
+.account-title {
+    font-family: "Staatliches", sans-serif;
+    font-weight: 400;
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+
+.account-text {
+    display: block;
+    font-family: "Staatliches", sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+    letter-spacing: 1px;
+}
+
+
+.account-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: "Arial", sans-serif;
+    box-sizing: border-box;
+}
+
+
+.account-button {
+    background-color: #b00101;
+    color: white;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 30px;
+    font-family: "Staatliches", sans-serif;
+    font-weight: 400;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.account-button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 20px #310303;
+}
+
+/* "Already have an account?" link */
+.account-no {
+    color: white;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 0.3rem;
+}
+
+.account-no:hover {
+    color: #b00101;
+}
+
+/* Genre selection container */
+.account-genre {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-family: "Staatliches", sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+/* Each genre checkbox + label container */
+.account-genres {
+    display: inline-block;
+    padding: 7px 10px;
+    transform: scale(1.2);
+    margin: 0 5px 10px 0;
+    color: white;
+    cursor: pointer;
+    font-family: "Staatliches", sans-serif;
+}
+
+/* Checkbox input */
+.account-genres input[type="checkbox"] {
+    margin-right: 5px;
+    transform: scale(1.2);
+    vertical-align: middle;
+}
+
+/* Responsive: stack form vertically on smaller screens */
+@media (max-width: 768px) {
+    .register-box {
+        flex-direction: column;
+        top: 40%;
+        transform: translate(0, -40%);
+        padding: 0 1rem;
+    }
+
+    .register-item {
+        width: 100%;
+        margin: 1rem 0;
+        padding: 20px;
+    }
+
+    .account-button {
+        font-size: 1rem;
+        padding: 0.7rem 1.5rem;
+    }
+}

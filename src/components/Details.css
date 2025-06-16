@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
+
+.details-movie {
+    background: linear-gradient(165deg, #c60000, #700303, #530606);
+    color: white;
+    font-family: 'Staatliches', sans-serif;
+    padding: 3rem;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.details-back {
+  position: relative;
+  left: -10px;
+  width: 100px;
+  height: 36px;
+  color: white;
+  background-color: #700303;
+  border: none;
+  font-size: 1rem;
+  font-family: "Staatliches", sans-serif;
+  padding: 5px 12px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.details-back:hover {
+  background-color: #7a0000;
+  transform: scale(1.05);
+}
+
+.details-title {
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7),
+                 0 0 20px rgba(255, 0, 0, 0.8);
+    letter-spacing: 2px;
+    transition: text-shadow 0.3s ease;
+    position: relative;
+    display: inline-block;
+    padding: 0 1rem;
+}
+
+.details-title:hover {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.9),
+                 0 0 30px rgba(255, 0, 0, 1);
+}
+
+.details-tagline {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.details-overview {
+    font-size: 1.4rem;
+    max-width: 1200px;
+    min-width: 800px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.details-info {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.details-info p {
+    margin: 0.5rem 0;
+}
+
+#poster {
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5),
+                0 0 40px rgba(255, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    margin-bottom: 3rem;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+#poster:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.8),
+                0 0 60px rgba(255, 0, 0, 0.5);
+}
+
+.trailers-section {
+    margin-top: 3rem;
+}
+
+.trailers-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.trailers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+.trailer-tile {
+    transition: all 0.3s ease;
+}
+
+.trailer-thumbnail {
+    width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.trailer-thumbnail:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .details-movie {
+        padding: 2rem 1rem;
+    }
+    
+    .details-title {
+        font-size: 2.5rem;
+    }
+    
+    .details-tagline {
+        font-size: 1.5rem;
+    }
+    
+    #poster {
+        width: 250px;
+    }
+    
+    .trailers-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .details-title {
+        font-size: 2rem;
+    }
+    
+    #poster {
+        width: 200px;
+    }
+}

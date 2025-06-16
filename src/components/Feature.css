@@ -1,0 +1,90 @@
+body{
+    background-color: black;
+}
+.feature-title {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.feature-title h2 {
+    font-family: "Staatliches", sans-serif;
+    font-weight: 400;
+    font-size: 70px;
+    letter-spacing: 2px;
+    color: white;
+    text-shadow: 0 0 10px rgba(198, 0, 0, 0.7);
+}
+
+.feature {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.feature-flex {
+    flex: 0 0 calc(25% - 2rem);
+    min-width: 250px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.feature-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+}
+
+.feature-flex:hover {
+    transform: scale(1.05);
+    z-index: 2;
+}
+
+.feature-flex:hover .feature-image {
+    box-shadow: 0 0 20px 5px rgba(198, 0, 0, 0.7);
+    filter: brightness(1.05);
+}
+
+/* Loading text style */
+.feature p {
+    font-family: "Staatliches", sans-serif;
+    font-size: 1.5rem;
+    text-align: center;
+    color: white;
+    margin: 2rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .feature-flex {
+        flex: 0 0 calc(33.333% - 2rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .feature-flex {
+        flex: 0 0 calc(50% - 2rem);
+    }
+    
+    .feature-title h2 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .feature-flex {
+        flex: 0 0 100%;
+    }
+    
+    .feature-title h2 {
+        font-size: 1.5rem;
+    }
+}

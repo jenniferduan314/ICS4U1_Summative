@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
+
+.error-container {
+    background: linear-gradient(135deg, #c60000, #8b0000, #5a0000);
+    color: white;
+    font-family: 'Staatliches', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-title {
+    font-size: 6rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.7),
+                 0 0 30px rgba(255, 0, 0, 0.8);
+    letter-spacing: 3px;
+    animation: pulse 2s infinite alternate;
+}
+
+.error-subtitle {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.error-message {
+    font-size: 1.5rem;
+    max-width: 600px;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.error-button {
+    padding: 1rem 2.5rem;
+    background: linear-gradient(to right, #ff0000, #c60000);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Staatliches', sans-serif;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    letter-spacing: 1px;
+}
+
+.error-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+    background: linear-gradient(to right, #ff3333, #d10000);
+}
+
+@keyframes pulse {
+    from {
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.7),
+                     0 0 30px rgba(255, 0, 0, 0.8);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.9),
+                     0 0 40px rgba(255, 0, 0, 1);
+    }
+}
+
+
+@media (max-width: 768px) {
+    .error-title {
+        font-size: 4rem;
+    }
+    
+    .error-subtitle {
+        font-size: 2rem;
+    }
+    
+    .error-message {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-title {
+        font-size: 3rem;
+    }
+    
+    .error-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .error-button {
+        padding: 0.8rem 2rem;
+        font-size: 1.2rem;
+    }
+}
