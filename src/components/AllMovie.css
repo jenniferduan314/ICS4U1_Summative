@@ -6,8 +6,8 @@
     justify-content: center;
     background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
     padding: 2rem;
-    border: 3px solid #b00101;
-    border-radius: 12px;
+    border: 5px solid #b00101;
+    border-radius: 1px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
