@@ -39,7 +39,7 @@ function Cart() {
 
     return (
         <div className="cart">
-            <button className="cart-back" onClick={() => navigate(`/movies/genre/${genreList[0].id}`)}>Back</button>
+            <button className="cart-back" onClick={() => navigate(-1)}>Back</button>
             <label className="cart-title">Cart</label>
             <div className="cart-items">
                 {

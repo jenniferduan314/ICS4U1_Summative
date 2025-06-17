@@ -129,12 +129,8 @@ function Settings() {
         <img src={Collage} alt="collage" id="hero-image" />
         <div className="shadow"></div>
         <button
-          className="settings-back"
-          type="submit"
-          onClick={() => navigate(`/movies/genre/${genreList[0]?.id}`)}
-        >
-          Back
-        </button>
+          className="settings-back" type="submit" onClick={() => navigate(`/movies/genre/${genreList[0]?.id}`)}
+        >Back</button>
         <div className="register-box settings-box">
           <div className="register-item">
             <div className="account-title">Edit Profile</div>
