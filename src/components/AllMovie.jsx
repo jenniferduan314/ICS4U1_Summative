@@ -3,9 +3,12 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useStoreContext } from "../context";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../firebase";
+import { Map } from 'immutable';
 
 function AllMovies() {
-    const { cart, setCart } = useStoreContext();
+    const { user, cart, setCart, purchased } = useStoreContext();
     const [movies, setMovies] = useState([]);
     const { id } = useParams();
     const [page, setPage] = useState(1);
@@ -18,7 +21,7 @@ function AllMovies() {
                 `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&with_genres=${id}&page=${page}`
             );
             setMovies(response.data.results);
-            setTotalPages(Math.min(response.data.total_pages, 20));
+            setTotalPages(response.data.total_pages, 20);
         } getMovies();
     }, [id, page]);
 
@@ -41,13 +44,38 @@ function AllMovies() {
     function Details(id) {
         navigate(`/movies/details/${id}`);
     }
-
-    function addToCart(movie) {
-        const movieDetails = {
-            title: movie.original_title,
-            url: movie.poster_path,
+    
+    function buttonText(movie) {
+        if (purchased.has(String(movie))) {
+            return "Purchased";
+        } else if (cart.has(String(movie))) {
+            return "Added";
+        } else {
+            return "Buy";
         };
-        setCart((prevCart) => prevCart.set(movie.id, movieDetails));
+    }
+
+    const addToCart = (id, title, poster) => {
+        if (purchased.has(id + "")) {
+          //cannot add an item that has already been purchased
+          return;
+        }
+    
+        if (cart.has(id + "")) {
+          //cannot add an item that has already been added
+          return;
+        }
+        
+        const movieDetails = {
+            title,
+            poster,
+        };
+        
+        setCart((prevCart) => {
+          const cart = prevCart.set(String(id), movieDetails);
+          localStorage.setItem(user.uid, JSON.stringify(cart.toJS()));
+          return cart;
+        });
     }
 
     return (
@@ -56,7 +84,7 @@ function AllMovies() {
                 <div key={movie.id} className="movie">
                     <div className="movie-box">
                         <img className="movie-poster" onClick={() => Details(movie.id)} src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title}></img>
-                        <button className="movie-buy" onClick={() => addToCart(movie)}> {cart.has(movie.id) ? "Added" : "Buy"} </button>
+                        <button className="movie-buy" onClick={() => addToCart(movie.id, movie.original_title, movie.poster_path)}> {buttonText(movie.id)} </button>
                     </div>
                 </div>
 

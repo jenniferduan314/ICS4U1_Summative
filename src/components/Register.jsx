@@ -12,7 +12,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function Register() {
     const navigate = useNavigate();
-    const { setUser, genreList, setGenreList } = useStoreContext();
+    const { setUser, genreList, setGenreList, setLoggedIn, loggedIn } = useStoreContext();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -114,6 +114,7 @@ function Register() {
             } else {
                 console.log('hi');
                 setUser(user);
+                setLoggedIn(true);
                 //storing genres
                 setGenreList(genreSorted);
                 const userData = { genres: genreSorted };
