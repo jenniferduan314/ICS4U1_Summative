@@ -42,30 +42,36 @@ function Login() {
     }
 
     async function loginByGoogle() {
-        try {
-            const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
-            setUser(user);
+    try {
+        const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+        setUser(user);
 
-            const docRef = doc(firestore, "users", user.email);
-            const data = await getDoc(docRef);
+        const docRef = doc(firestore, "users", user.email);
+        const data = await getDoc(docRef);
 
-            const genres = data.exists() && (data.data().genreSorted || data.data().genres) || [];
-            console.log("📥 Genres retrieved from Firestore (Google):", genres);
-
-            setGenreList(genres);
-
-            if (genres.length === 0) {
-                alert("No genres found. Please update your preferences.");
-                navigate(`/movies`);
-                return;
-            }
-
-            navigate(`/movies/genre/${genres[0].id}`);
-        } catch (error) {
-            alert("Google sign-in error.");
-            console.error(error);
+        if (!data.exists()) {
+            alert("You must register before logging in with this account.");
+            await signOut(auth); // sign the user out
+            setUser(null); // reset context
+            return;
         }
+
+        const genres = data.data().genreSorted || data.data().genres || [];
+        console.log("📥 Genres retrieved from Firestore (Google):", genres);
+        setGenreList(genres);
+
+        if (genres.length === 0) {
+            alert("No genres found. Please update your preferences.");
+            navigate(`/movies`);
+            return;
+        }
+
+        navigate(`/movies/genre/${genres[0].id}`);
+    } catch (error) {
+        alert("Google sign-in error.");
+        console.error(error);
     }
+}
 
     return (
         <div className="hero">
