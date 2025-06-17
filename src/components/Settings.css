@@ -13,6 +13,9 @@
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
+.settings-text{
+    font-family: "Staatliches", sans-serif;
+}
 
 .settings-back:hover {
   background-color: #7a0000;

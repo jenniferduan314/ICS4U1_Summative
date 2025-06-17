@@ -27,6 +27,7 @@ function Header() {
 }
 
 
+
     function handleSearch(e) {
         e.preventDefault();
         if (searchTerm.trim()) {

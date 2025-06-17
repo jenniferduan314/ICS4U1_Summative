@@ -12,6 +12,7 @@ import { auth } from "../firebase";
 function Settings() {
     const navigate = useNavigate();
     const { user, setUser, genreList, setGenreList, purchased } = useStoreContext();
+    const isEmailPasswordUser = user?.providerData?.[0]?.providerId === "password";
     const nameArray = user.displayName.split(" ");
     const [fName, setfName] = useState(nameArray[0]);
     const [lName, setlName] = useState(nameArray[1]);
@@ -39,26 +40,34 @@ function Settings() {
 
     async function changeName(event) {
         event.preventDefault();
-        if (fName == user.displayName.split(" ")[0] && lName == user.displayName.split(" ")[1]) {
+
+        const newDisplayName = `${fName} ${lName}`;
+        const currentUser = auth.currentUser;
+
+        if (newDisplayName === currentUser.displayName) {
             return alert("No changes were made.");
         }
+
         try {
-            const currentUser = auth.currentUser;
+            // Update the profile
             await updateProfile(currentUser, {
-                displayName: `${fName} ${lName}`,
+                displayName: newDisplayName,
             });
 
-            setUser((prevUser) => ({
-                ...prevUser,
-                displayName: `${fName} ${lName}`,
-            }));
+            // Force reload the latest user info from Firebase
+            await currentUser.reload();
+
+            // Now set it to the updated user object
+            setUser(auth.currentUser);
+
 
             alert("Name has been successfully changed!");
         } catch (error) {
-            console.log(error);
+            console.error(error);
             alert("Error updating first and last name");
         }
     }
+
 
     async function updateGenres() {
         const genreSelected = Object.keys(checkboxesRef.current)
@@ -119,22 +128,30 @@ function Settings() {
                         <div className="account-title">Edit Profile</div>
                         <form onSubmit={(event) => changeName(event)}>
                             <label className="settings-text">First Name:</label>
-                            <input className="account-input" type="text" value={fName} onChange={(event) => setfName(event.target.value)}></input>
+                            <input className="account-input" type="text" value={fName} onChange={(event) => setfName(event.target.value)} />
                             <label className="settings-text">Last Name:</label>
-                            <input className="account-input" type="text" value={lName} onChange={(event) => setlName(event.target.value)}></input>
+                            <input className="account-input" type="text" value={lName} onChange={(event) => setlName(event.target.value)} />
                             <label className="settings-text">Email:</label>
-                            <input className="account-input" type="email" value={user.email} readOnly></input>
+                            <input className="account-input" type="email" value={user.email} readOnly />
                             <button className="settings-button" type="submit">Confirm Changes</button>
                         </form>
-                        <form onSubmit={(event) => changePassword(event)}>
-                            <label className="settings-text">Old Password</label>
-                            <input className="account-input" type="password" ref={oldPass} required></input>
-                            <label className="settings-text">New Password</label>
-                            <input className="account-input" type="password" ref={newPass} required></input>
-                            <label className="settings-text">Confirm New Password</label>
-                            <input className="account-input" type="password" ref={conPass} required></input>
-                            <button className="settings-button" type="submit">Change Password</button>
-                        </form>
+
+                        {isEmailPasswordUser && (
+                            <form onSubmit={(event) => changePassword(event)}>
+                                <label className="settings-text">Old Password</label>
+                                <input className="account-input" type="password" ref={oldPass} required />
+                                <label className="settings-text">New Password</label>
+                                <input className="account-input" type="password" ref={newPass} required />
+                                <label className="settings-text">Confirm New Password</label>
+                                <input className="account-input" type="password" ref={conPass} required />
+                                <button className="settings-button" type="submit">Change Password</button>
+                            </form>
+                        )}
+                        {!isEmailPasswordUser && (
+                            <p className="settings-text">You signed in using a third-party provider (e.g. Google), so your password cannot be changed here.
+                            </p>
+                        )}
+
                     </div>
                     <div className="register-item">
                         <div className="account-genre">
