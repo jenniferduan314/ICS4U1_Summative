@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { Map } from 'immutable';
+import { Map } from "immutable";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, firestore } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -8,7 +8,7 @@ const StoreContext = createContext();
 
 export const StoreProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loggedIn, setLoggedIn] = useState(false); // ✅ added
+    const [loggedIn, setLoggedIn] = useState(false);
     const [genreList, setGenreList] = useState([]);
     const [cart, setCart] = useState(Map());
     const [purchased, setPurchased] = useState(Map());
@@ -23,7 +23,17 @@ export const StoreProvider = ({ children }) => {
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setUser(user);
-                setLoggedIn(true); // ✅ user is logged in
+                setLoggedIn(true);
+
+                // 🟡 Extract first/last name from displayName if available
+                if (user.displayName) {
+                    const nameParts = user.displayName.split(" ");
+                    setFirstName(nameParts[0] || "");
+                    setLastName(nameParts.slice(1).join(" ") || "");
+                } else {
+                    setFirstName("");
+                    setLastName("");
+                }
 
                 const sessionCart = localStorage.getItem(user.uid);
                 if (sessionCart) {
@@ -48,7 +58,9 @@ export const StoreProvider = ({ children }) => {
                 }
             } else {
                 setUser(null);
-                setLoggedIn(false); // ✅ user is logged out
+                setLoggedIn(false);
+                setFirstName("");
+                setLastName("");
             }
             setLoading(false);
         });
@@ -63,8 +75,8 @@ export const StoreProvider = ({ children }) => {
             value={{
                 user,
                 setUser,
-                loggedIn,       // ✅ provided
-                setLoggedIn,    // ✅ provided
+                loggedIn,
+                setLoggedIn,
                 genreList,
                 setGenreList,
                 cart,

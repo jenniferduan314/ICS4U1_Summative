@@ -115,6 +115,9 @@ function Register() {
                 console.log('hi');
                 setUser(user);
                 setLoggedIn(true);
+                console.log("Google user:", user);
+                console.log("Display name:", user.displayName);
+
                 //storing genres
                 setGenreList(genreSorted);
                 const userData = { genres: genreSorted };
