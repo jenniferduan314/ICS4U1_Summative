@@ -21,7 +21,7 @@ function AllMovies() {
                 `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&with_genres=${id}&page=${page}`
             );
             setMovies(response.data.results);
-            setTotalPages(response.data.total_pages, 20);
+            setTotalPages(Math.min(response.data.total_pages, 20));
         } getMovies();
     }, [id, page]);
 
