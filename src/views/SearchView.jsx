@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useStoreContext } from "../context";
 import "./SearchView.css";
 
 function SearchView() {
@@ -14,13 +15,14 @@ function SearchView() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    const { user, cart, setCart, purchased } = useStoreContext();
+
     // Debounce input
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedQuery(query);
-            setPage(1); // reset to page 1 on new search
+            setPage(1);
         }, 500);
-
         return () => clearTimeout(timer);
     }, [query]);
 
@@ -46,6 +48,23 @@ function SearchView() {
         fetchResults();
     }, [debouncedQuery, page]);
 
+    const buttonText = (movieId) => {
+        if (purchased.has(String(movieId))) return "Purchased";
+        if (cart.has(String(movieId))) return "Added";
+        return "Buy";
+    };
+
+    const addToCart = (id, title, poster) => {
+        if (purchased.has(String(id)) || cart.has(String(id))) return;
+
+        const movieDetails = { title, poster };
+        setCart((prevCart) => {
+            const newCart = prevCart.set(String(id), movieDetails);
+            localStorage.setItem(user.uid, JSON.stringify(newCart.toJS()));
+            return newCart;
+        });
+    };
+
     return (
         <div className="search-view">
             <button className="search-back" onClick={() => navigate(-1)}>Back</button>
@@ -58,9 +77,20 @@ function SearchView() {
             />
             <div className="search-results">
                 {results.map((movie) => (
-                    <div key={movie.id} className="search-result" onClick={() => navigate(`/movies/details/${movie.id}`)}>
-                        <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} />
+                    <div key={movie.id} className="search-result">
+                        <img
+                            src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                            alt={movie.title}
+                            onClick={() => navigate(`/movies/details/${movie.id}`)}
+                        />
                         <label>{movie.title}</label>
+                        <button
+                            className="movie-buy"
+                            onClick={() => addToCart(movie.id, movie.title, movie.poster_path)}
+                            disabled={purchased.has(String(movie.id))}
+                        >
+                            {buttonText(movie.id)}
+                        </button>
                     </div>
                 ))}
             </div>
