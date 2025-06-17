@@ -4,15 +4,19 @@ import Collage from "../images/collage.jpeg";
 import { useNavigate } from "react-router";
 import { useState, useRef } from "react";
 import { useStoreContext } from "../context";
-import { Map } from 'immutable';
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase";
+import { firestore } from "../firebase";
+import { signOut } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function Register() {
     const navigate = useNavigate();
-    const { setFirstName, setLastName, setEmail, setPassword, genreList, setGenreList, setLoggedIn, setCart } = useStoreContext();
-    const firstName = useRef('');
-    const lastName = useRef('');
-    const email = useRef('');
-    const password = useRef('');
+    const { setUser, genreList, setGenreList } = useStoreContext();
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [rePass, setRePass] = useState('');
     const checkboxesRef = useRef({});
     const genres = [
@@ -33,33 +37,95 @@ function Register() {
         { id: 37, genre: "Western" }
     ]
 
-    function create(event) {
+    const registerByEmail = async (event) => {
         event.preventDefault();
-        if (password.current.value != rePass) {
-            return alert("Passwords do not match. Please ensure your passwords match.");
+        try {
+            if (password != rePass) {
+                return alert("Passwords do not match. Please ensure your passwords match.");
+            }
+
+            const genreSelected = Object.keys(checkboxesRef.current)
+                .filter((genreId) => checkboxesRef.current[genreId].checked)
+                .map(Number);
+
+            if (genreSelected.length < 5) {
+                return alert("Please select at least 5 genres.");
+            }
+
+            const genreSorted = genreSelected
+                .map((genreId) => genres.find((genre) => genre.id === genreId))
+                .sort((a, b) => a.genre.localeCompare(b.genre));
+            //adding user
+            const user = (await createUserWithEmailAndPassword(auth, email, password)).user;
+            await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+            setUser(user);
+            //storing genres
+            setGenreList(genreSorted);
+            const docRef = doc(firestore, "users", user.email);
+            const userData = { genres: genreSorted };
+            await setDoc(docRef, userData, { merge: true });
+            //registered
+            navigate(`/movies/genre/${genreSorted[0]}`);
+            alert("Account Created.");
+        } catch (error) {
+            console.log(error);
+            alert("Error creating user with email and password.");
         }
+    }
 
-        const genreSelected = Object.keys(checkboxesRef.current)
-            .filter((genreId) => checkboxesRef.current[genreId].checked)
-            .map(Number);
+    const registerByGoogle = async () => {
+        console.log('hi');
+        try {
+            if (password != rePass) {
+                return alert("Passwords do not match. Please ensure your passwords match.");
+            }
 
-        if (genreSelected.length < 5) {
-            return alert("Please select at least 5 genres.");
+            const genreSelected = Object.keys(checkboxesRef.current)
+                .filter((genreId) => checkboxesRef.current[genreId].checked)
+                .map(Number);
+
+            if (genreSelected.length < 5) {
+                return alert("Please select at least 5 genres.");
+            }
+
+            const genreSorted = genreSelected
+                .map((genreId) => genres.find((genre) => genre.id === genreId))
+                .sort((a, b) => a.genre.localeCompare(b.genre));
+
+            //adding user
+            const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+            const docRef = doc(firestore, "users", user.email);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const userData = docSnap.data();
+                if (userData.googleAccount) {
+                    // If the user is already registered via Google
+                    alert("You have already registered with Google.");
+                    signOut(auth);
+                    setUser(null);
+                    return;
+                } else {
+                    // If the user is trying to register via Google but their email is already in use by an email/password registration
+                    alert("This email is already associated with an existing account. Please log in using your email and password.");
+                    signOut(auth);
+                    setUser(null);
+                    return;
+                }
+            } else {
+                console.log('hi');
+                setUser(user);
+                //storing genres
+                setGenreList(genreSorted);
+                const userData = { genres: genreSorted };
+                await setDoc(docRef, userData, { merge: true });
+                //registered
+                navigate(`/movies/genre/${genreSorted[0]}`);
+                alert("Account Created.");
+            }
+        } catch (error) {
+            console.log(error);
+            alert("Error creating user with email and password!");
         }
-
-        const genreSorted = genreSelected
-            .map((genreId) => genres.find((genre) => genre.id === genreId))
-            .sort((a, b) => a.genre.localeCompare(b.genre));
-
-        setFirstName(firstName.current.value);
-        setLastName(lastName.current.value);
-        setEmail(email.current.value);
-        setPassword(password.current.value);
-        setGenreList(genreSorted);
-        setCart(Map());
-        setLoggedIn(true);
-        localStorage.setItem("user", "true");
-        return navigate(`/movies/genre/${genreSorted[0].id}`);
     }
 
     return (
@@ -69,21 +135,22 @@ function Register() {
             <div className="register-box">
                 <div className="register-item">
                     <div className="account-title">Create Account</div>
-                    <form onSubmit={(event) => create(event)}>
+                    <form onSubmit={(event) => registerByEmail(event)}>
                         <label className="account-text">First Name:</label>
-                        <input className="account-input" type="text" ref={firstName} required></input>
+                        <input className="account-input" type="text" value={firstName} onChange={(event) => { setFirstName(event.target.value) }} required></input>
                         <label className="account-text">Last Name:</label>
-                        <input className="account-input" type="text" ref={lastName} required></input>
+                        <input className="account-input" type="text" value={lastName} onChange={(event) => { setLastName(event.target.value) }} required></input>
                         <label className="account-text">Email:</label>
-                        <input className="account-input" type="email" ref={email} required></input>
+                        <input className="account-input" type="email" value={email} onChange={(event) => { setEmail(event.target.value) }} required></input>
                         <label className="account-text">Password:</label>
-                        <input className="account-input" type="password" ref={password} required></input>
+                        <input className="account-input" type="password" value={password} onChange={(event) => { setPassword(event.target.value) }} required></input>
                         <label className="account-text">Re-enter Password:</label>
                         <input className="account-input" type="password" value={rePass} onChange={(event) => { setRePass(event.target.value) }} required></input>
                         <label>Already have an account? </label>
                         <label className="account-no" onClick={() => navigate("/login")}>Click here</label>
                         <button className="account-button" type="submit">CREATE</button>
                     </form>
+                    <button className="account-button" onClick={() => registerByGoogle()}>REGISTER WITH GOOGLE</button>
                 </div>
                 <div className="register-item">
                     <div className="account-genre">
@@ -92,17 +159,10 @@ function Register() {
                     </div>
                     {genres.map((item) => (
                         <div className="account-genres" key={item.id}>
-                            <input
-                                className="account-genres"
-                                type="checkbox"
-                                id="check"
-                                defaultChecked={genreList.some((genre) => genre.id === item.id)}
-                                ref={(el) => (checkboxesRef.current[item.id] = el)}
-                            />
+                            <input className="account-genres" type="checkbox" id="check" ref={(el) => (checkboxesRef.current[item.id] = el)} />
                             <label className="account-genres">{item.genre}</label>
                         </div>
                     ))}
-
                 </div>
             </div>
         </div>
