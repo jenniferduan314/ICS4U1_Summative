@@ -25,7 +25,7 @@ export const StoreProvider = ({ children }) => {
                 setUser(user);
                 setLoggedIn(true);
 
-                // 🟡 Extract first/last name from displayName if available
+                // Extract first/last name from displayName if available
                 if (user.displayName) {
                     const nameParts = user.displayName.split(" ");
                     setFirstName(nameParts[0] || "");
@@ -65,6 +65,18 @@ export const StoreProvider = ({ children }) => {
             setLoading(false);
         });
     }, []);
+
+    // Optional enhancement: keep firstName and lastName in sync with user.displayName whenever user changes
+    useEffect(() => {
+        if (user?.displayName) {
+            const nameParts = user.displayName.split(" ");
+            setFirstName(nameParts[0] || "");
+            setLastName(nameParts.slice(1).join(" ") || "");
+        } else {
+            setFirstName("");
+            setLastName("");
+        }
+    }, [user]);
 
     if (loading) {
         return <h1>Loading...</h1>;
