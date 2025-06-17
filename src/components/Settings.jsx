@@ -75,7 +75,8 @@ function Settings() {
 
         setGenreList(genreSorted);
         const docRef = doc(firestore, "users", user.email);
-        await setDoc(docRef, { sortedGenres: sortedGenres, previous: prevPurchases.toJS() });
+        await setDoc(docRef, { genres: genreSorted, purchased: purchased.toJS() });
+
         return alert("Changes have been saved.");
     }
 
